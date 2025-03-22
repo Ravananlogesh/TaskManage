@@ -1,0 +1,14 @@
+[server]
+port = 8080
+debug = true
+
+[database]
+host = "localhost"
+user = "root"
+port = "3306"
+pass = "password"
+name = "mydb"
+sslmode = "disable"
+
+[jwt]
+jwt_secret="$ADBCXVNRETROZNA763546582"
