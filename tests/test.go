@@ -5,17 +5,19 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"tasks/internal/handlers/tasks"
+	"tasks/internal/models"
 	"tasks/internal/models/request"
-	"tasks/internal/utils"
+
+	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCreateTask(t *testing.T) {
 	r := gin.Default()
-	r.POST("/tasks", CreateTask)
+	r.POST("/tasks", tasks.CreateTask)
 
 	reqBody := request.CreateTaskRequest{
 		Title:       "test task",
@@ -105,4 +107,4 @@ func TestDeleteTask(t *testing.T) {
 	r.ServeHTTP(resp, req)
 
 	assert.Equal(t, http.StatusOK, resp.Code)
-}s
+}
