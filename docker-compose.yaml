@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  taskmanage:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./toml:/root/toml
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

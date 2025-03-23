@@ -18,7 +18,7 @@ func Register(c *gin.Context) {
 	err := c.ShouldBindBodyWithJSON(&register)
 	if err != nil {
 		log.Log(utils.ERROR, "Register 001", err.Error())
-		utils.JSONResponse(c, http.StatusBadRequest, false, err.Error(), nil)
+		utils.JSONErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 	userData := models.User{
@@ -27,7 +27,7 @@ func Register(c *gin.Context) {
 	err = userData.PasswordHASH(log, register.Password)
 	if err != nil {
 		log.Log(utils.ERROR, "Register 002", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, err.Error(), nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -35,7 +35,7 @@ func Register(c *gin.Context) {
 	err = userRepo.CreateUser(&userData)
 	if err != nil {
 		log.Log(utils.ERROR, "Register 002", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, err.Error(), nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
 	log.Log(utils.INFO, "Register end")

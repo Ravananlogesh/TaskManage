@@ -20,14 +20,14 @@ func Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&login); err != nil {
 		log.Log(utils.ERROR, "Login 01", err.Error())
-		utils.JSONResponse(c, http.StatusBadRequest, false, "Invalid Request", nil)
+		utils.JSONErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
 	tokenString, err := CheckAndCompare(log, login)
 	if err != nil {
 		log.Log(utils.ERROR, "Login 02", err.Error())
-		utils.JSONResponse(c, http.StatusUnauthorized, false, "Invalid Credentials", nil)
+		utils.JSONErrorResponse(c, http.StatusUnauthorized, err)
 		return
 	}
 

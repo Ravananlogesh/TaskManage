@@ -92,6 +92,7 @@ func IPRestrictionMiddleware() gin.HandlerFunc {
 
 		err := config.LoadTOML("toml/config.toml", &cf)
 		if err != nil {
+			utils.Log.WithField("ip", ctx.ClientIP()).Warn("Missing Authorization header")
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Access restricted"})
 			return
 		}

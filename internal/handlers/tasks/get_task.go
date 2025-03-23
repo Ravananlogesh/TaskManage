@@ -17,13 +17,13 @@ func GetAllTask(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
 		log.Log(utils.ERROR, "GAT001", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, "Failed to fetch tasks", nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	if err != nil {
 		log.Log(utils.ERROR, "GAT002", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, "Failed to fetch tasks", nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
 	status := c.Query("status")
@@ -46,7 +46,7 @@ func GetAllTask(c *gin.Context) {
 	tasks, err := taskRepo.GetTasksWithFilter(log, &filter)
 	if err != nil {
 		log.Log(utils.ERROR, "GAT003", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, "Failed to fetch tasks", nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 	}
 	log.Log("GetAllTask end...")
 
@@ -57,10 +57,11 @@ func GetAllTask(c *gin.Context) {
 func GetTaskUseByID(c *gin.Context) {
 	log := new(utils.Logger)
 	log.SetSid(c.Request)
+	log.Log(utils.INFO, "GetTaskUseByID +")
 	taskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Log(utils.ERROR, "GT001", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, "Failed to fetch tasks", nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
 	taskRepo := repo.NewTaskRepo()
@@ -68,9 +69,11 @@ func GetTaskUseByID(c *gin.Context) {
 	task, err := taskRepo.GetTaskByID(uint(taskId))
 	if err != nil {
 		log.Log(utils.ERROR, "GT002", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, "Failed to fetch tasks", nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
+	log.Log(utils.INFO, "GetTaskUseByID -")
+
 	utils.JSONResponse(c, http.StatusOK, true, "Task fetched successfully", task)
 
 }

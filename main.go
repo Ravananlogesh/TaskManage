@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"tasks/config"
@@ -28,12 +29,12 @@ func main() {
 		log.Fatal("Error Occur in DB Connection : ", err)
 	}
 	r := gin.Default()
-	r.POST("/login", login.Login)
-	r.POST("/register", register.Register, middleware.IPRestrictionMiddleware(), register.Register)
+	gin.SetMode(gin.ReleaseMode)
+	r.POST("/login", middleware.RateLimitMiddleware(), login.Login)
+	r.POST("/register", middleware.RateLimitMiddleware(), middleware.IPRestrictionMiddleware(), register.Register)
 
 	taskHandler := r.Group("/tasks")
 	taskHandler.Use(middleware.AuthMiddleware(), middleware.RateLimitMiddleware())
-	// r.Use(middleware.RateLimitMiddleware())
 
 	taskHandler.POST("/", tasks.CreateTask)
 	taskHandler.GET("/", tasks.GetAllTask)
@@ -41,7 +42,7 @@ func main() {
 	taskHandler.PUT("/:id", tasks.UpdateTask)
 	taskHandler.DELETE("/:id", tasks.DeleteTask)
 	log.Println("Server is running on port 1803")
-
-	r.Run(":1803")
+	port := config.GetConfig().Service.Port
+	r.Run(fmt.Sprintf(":%d", port))
 
 }

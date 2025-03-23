@@ -1,0 +1,11 @@
+2025/03/23 09:13:52 Global configuration loaded successfully
+2025/03/23 09:13:52 Database connection established successfully
+2025/03/23 09:13:52 Server is running on port 1803
+2025/03/23 09:14:17 e7e4281943f449438be8cc744559eebe - () - (INFO) - [AuthMiddleware start]
+2025/03/23 09:14:17 f63c8f6d6d1748748b3e5cf342ea1f98 - () - (CreateTask started) - []
+2025/03/23 09:14:17 f63c8f6d6d1748748b3e5cf342ea1f98 - () - (CreateTask end) - []
+2025/03/23 09:14:17 e7e4281943f449438be8cc744559eebe - () - (INFO) - [AuthMiddleware end]
+2025/03/23 09:14:57 588a1d080cae4becb13bd5fe0abefc11 - () - (INFO) - [AuthMiddleware start]
+2025/03/23 09:14:57 d0fa0a2242e34ff69710b4ac2cedabf5 - () - (CreateTask started) - []
+2025/03/23 09:14:57 d0fa0a2242e34ff69710b4ac2cedabf5 - () - (CreateTask end) - []
+2025/03/23 09:14:57 588a1d080cae4becb13bd5fe0abefc11 - () - (INFO) - [AuthMiddleware end]

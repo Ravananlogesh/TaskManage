@@ -19,13 +19,13 @@ func CreateTask(c *gin.Context) {
 	log.Log("CreateTask started")
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
 		log.Log(utils.ERROR, "CT001", err.Error())
-		utils.JSONResponse(c, http.StatusBadRequest, false, "Invalid request "+err.Error(), nil)
+		utils.JSONErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
 	if err := req.Validate(); err != nil {
 		log.Log(utils.ERROR, "CT002", err.Error())
-		utils.JSONResponse(c, http.StatusBadRequest, false, "Invalid request data :"+err.Error(), nil)
+		utils.JSONErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
@@ -39,7 +39,7 @@ func CreateTask(c *gin.Context) {
 	err := taskRepo.CreateTask(&task)
 	if err != nil {
 		log.Log(utils.ERROR, "CT003", err.Error())
-		utils.JSONResponse(c, http.StatusInternalServerError, false, "Faild to create task "+err.Error(), nil)
+		utils.JSONErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
 

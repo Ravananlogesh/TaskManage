@@ -5,6 +5,7 @@ import (
 	"log"
 	"tasks/config"
 	"tasks/internal/models"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,13 +25,21 @@ func ConnectDatabase() error {
 		return err
 	}
 
-	db.Exec("CREATE TYPE task_status AS ENUM ('Pending', 'In Progress', 'Completed');")
+	err = TaskStatusEnum(db)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+		return err
+	}
 
 	err = db.AutoMigrate(&models.User{}, &models.Task{})
 	if err != nil {
 		log.Fatalf("Database migration failed: %v", err)
 		return err
 	}
+	sqlDB, _ := db.DB()
+	sqlDB.SetMaxOpenConns(25)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
 	GDB = db
 	log.Println("Database connection established successfully")
@@ -39,4 +48,21 @@ func ConnectDatabase() error {
 
 func GetDB() *gorm.DB {
 	return GDB
+}
+func TaskStatusEnum(db *gorm.DB) error {
+	var exists bool
+	checkEnumQuery := `
+		SELECT EXISTS (
+			SELECT 1 FROM pg_type WHERE typname = 'task_status'
+		);
+	`
+	if err := db.Raw(checkEnumQuery).Scan(&exists).Error; err != nil {
+		return err
+	}
+
+	if !exists {
+		createEnumQuery := `CREATE TYPE task_status AS ENUM ('Pending', 'In Progress', 'Completed');`
+		return db.Exec(createEnumQuery).Error
+	}
+	return nil
 }

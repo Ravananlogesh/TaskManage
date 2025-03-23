@@ -2,11 +2,8 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
-// TaskStatus defines possible task statuses
 type TaskStatus string
 
 const (
@@ -25,7 +22,6 @@ type TaskFilter struct {
 	SortOrder     string
 }
 
-// Task represents a task entity
 type Task struct {
 	ID          uint       `gorm:"primaryKey" json:"id"`
 	Title       string     `gorm:"not null" json:"title"`
@@ -35,9 +31,4 @@ type Task struct {
 	CreatedAt   time.Time  `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 	UserID      uint       `gorm:"not null;constraint:OnDelete:CASCADE;" json:"user_id"`
-}
-
-func (t *Task) BeforeUpdate(tx *gorm.DB) {
-	t.UpdatedAt = time.Now()
-	return
 }
