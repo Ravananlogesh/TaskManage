@@ -9,12 +9,18 @@ services:
       - ./toml:/root/toml
     depends_on:
       - postgres
+    environment:
+      DATABASE_URL: "postgres://logesh:loge@123@postgres:5432/taskmanage?sslmode=disable"
 
   postgres:
     image: postgres:16
     container_name: postgres_db
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: logesh
+      POSTGRES_PASSWORD: loge@123
+      POSTGRES_DB: taskmanage
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
