@@ -1,5 +1,5 @@
 # Variables
-APP_NAME=my-go-app
+APP_NAME=taskmanage
 GO_CMD=go
 BUILD_DIR=bin
 MAIN_FILE=cmd/api/main.go

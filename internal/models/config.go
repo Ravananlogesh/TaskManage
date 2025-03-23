@@ -1,9 +1,10 @@
 package models
 
 type Config struct {
-	Service  Service  `toml:"service"`
-	Database Database `toml:"database"`
-	Jwt      Jwt      `toml:"jwt"`
+	AllowedIPs []string `toml:"allowed_ips"`
+	Database   Database `toml:"database"`
+	Service    Service  `toml:"service"`
+	Jwt        Jwt      `toml:"jwt"`
 }
 
 type Service struct {

@@ -1,8 +1,9 @@
 package database
 
 import (
+	"fmt"
 	"log"
-	"os"
+	"tasks/config"
 	"tasks/internal/models"
 
 	"gorm.io/driver/postgres"
@@ -12,27 +13,18 @@ import (
 var GDB *gorm.DB
 
 func ConnectDatabase() error {
-	// var cf models.Config
+	cf := config.GetConfig()
 
-	// err := config.LoadTOML("config.toml", &cf)
-	// if err != nil {
-	// 	return err
-	// }
-	// dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", cf.Database.Host, cf.Database.Port, cf.Database.User,
-	// 	cf.Database.Pass, cf.Database.Name, cf.Database.Sslmode)
-
-	// // Connect to PostgreSQL
-	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	// if err != nil {
-	// 	log.Fatalf("Failed to connect to database: %v", err)
-	// 	return err
-	// }
-	dsn := os.Getenv("DATABASE_URL")
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", cf.Database.Host, cf.Database.Port, cf.Database.User,
+		cf.Database.Pass, cf.Database.Name, cf.Database.Sslmode)
+	// Connect to PostgreSQL
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 		return err
 	}
+
+	db.Exec("CREATE TYPE task_status AS ENUM ('Pending', 'In Progress', 'Completed');")
 
 	err = db.AutoMigrate(&models.User{}, &models.Task{})
 	if err != nil {

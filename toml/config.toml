@@ -4,11 +4,16 @@ debug = true
 
 [database]
 host = "localhost"
-user = "root"
-port = "3306"
-pass = "password"
-name = "mydb"
+user = "postgres"
+port = 5432
+pass = "96320"
+name = "taskmanage"
 sslmode = "disable"
 
 [jwt]
 jwt_secret="$ADBCXVNRETROZNA763546582"
+
+
+# config.toml
+allowed_ips = ["192.168.1.10", "203.0.113.42", "10.0.0.1"]
+

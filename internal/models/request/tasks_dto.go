@@ -10,10 +10,10 @@ import (
 var Validate = validator.New()
 
 type CreateTaskRequest struct {
-	Title       string     `json:"title" validate:"required,min=3,max=100"`
-	Description string     `json:"description" validate:"required"`
-	Status      string     `json:"status" validate:"required,oneof=Pending 'In Progress' Completed"`
-	DueDate     *time.Time `json:"due_date,omitempty"`
+	Title       string `json:"title" validate:"required,min=3,max=100"`
+	Description string `json:"description" validate:"required"`
+	Status      string `json:"status" validate:"required,oneof=Pending 'In Progress' Completed"`
+	DueDate     string `json:"due_date,omitempty"`
 }
 
 func (req *CreateTaskRequest) Validate() error {

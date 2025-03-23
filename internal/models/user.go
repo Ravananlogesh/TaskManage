@@ -29,6 +29,8 @@ func (user *User) PasswordHASH(log *utils.Logger, password string) error {
 
 // CheckPassword verifies if the given password is correct
 func (user *User) CheckPassword(log *utils.Logger, password string) bool {
+	log.Log(utils.INFO, "checkpassword +")
 	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	log.Log(utils.INFO, "checkpassword -")
 	return err == nil
 }

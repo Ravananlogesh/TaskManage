@@ -1,6 +1,7 @@
 package login
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"tasks/internal/models"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(c *gin.Context) {
@@ -43,9 +43,9 @@ func CheckAndCompare(log *utils.Logger, login models.Login) (string, error) {
 		return "", err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(login.Password)); err != nil {
+	if !user.CheckPassword(log, login.Password) {
 		log.Log(utils.ERROR, "CAC002", "Password mismatch for user: "+login.UserName)
-		return "", err
+		return "", errors.New("Password is  incorrect")
 	}
 
 	mapClaims := jwt.MapClaims{

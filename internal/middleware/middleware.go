@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"tasks/config"
+	"tasks/internal/models"
 	"tasks/internal/utils"
 
 	"github.com/gin-gonic/gin"
@@ -43,10 +45,10 @@ type Claims struct {
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		log := new(utils.Logger)
+		log.SetSid(ctx.Request)
 		log.Log(utils.INFO, "AuthMiddleware start")
 		defer log.Log(utils.INFO, "AuthMiddleware end")
 
-		// Extract the Authorization header
 		tokenString := ctx.GetHeader("Authorization")
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
 			log.Log(utils.ERROR, "AM001", "Missing or invalid Authorization header")
@@ -54,16 +56,19 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Remove "Bearer " prefix
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-		// Parse the token with claims
 		claims := &Claims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (any, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
-		if err != nil || !token.Valid {
+		if err != nil {
 			log.Log(utils.ERROR, "AM002", "Invalid or expired token: "+err.Error())
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
+			return
+		}
+		if !token.Valid {
+			log.Log(utils.ERROR, "AM002", "Invalid or expired token: ")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
 			return
 		}
@@ -74,9 +79,29 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Store userID in context for later use
 		ctx.Set("userID", claims.UserID)
 
 		ctx.Next()
+	}
+}
+
+func IPRestrictionMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		clientIP := ctx.ClientIP()
+		var cf models.Config
+
+		err := config.LoadTOML("toml/config.toml", &cf)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Access restricted"})
+			return
+		}
+		for _, ip := range cf.AllowedIPs {
+			if clientIP == ip {
+				ctx.Next()
+				return
+			}
+		}
+
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Access restricted"})
 	}
 }
