@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"tasks/internal/handlers/login"
 	"tasks/internal/handlers/tasks"
 	"tasks/internal/models"
 	"tasks/internal/models/request"
@@ -37,7 +38,7 @@ func TestCreateTask(t *testing.T) {
 
 func TestGetAllTask(t *testing.T) {
 	r := gin.Default()
-	r.GET("/tasks", GetAllTask)
+	r.GET("/tasks", tasks.GetAllTask)
 
 	req, _ := http.NewRequest("GET", "/tasks?page=1&limit=10", nil)
 	resp := httptest.NewRecorder()
@@ -49,7 +50,7 @@ func TestGetAllTask(t *testing.T) {
 
 func TestGetTaskUseByID(t *testing.T) {
 	r := gin.Default()
-	r.GET("/tasks/:id", GetTaskUseByID)
+	r.GET("/tasks/:id", tasks.GetTaskUseByID)
 
 	req, _ := http.NewRequest("GET", "/tasks/1", nil)
 	resp := httptest.NewRecorder()
@@ -61,7 +62,7 @@ func TestGetTaskUseByID(t *testing.T) {
 
 func TestLogin(t *testing.T) {
 	r := gin.Default()
-	r.POST("/login", Login)
+	r.POST("/login", login.Login)
 
 	loginReq := map[string]string{
 		"username": "testuser",
@@ -79,7 +80,7 @@ func TestLogin(t *testing.T) {
 }
 func TestUpdateTask(t *testing.T) {
 	r := gin.Default()
-	r.PUT("/tasks/:id", UpdateTask)
+	r.PUT("/tasks/:id", tasks.UpdateTask)
 
 	reqBody := models.Task{
 		Title:       "Updated Task",
@@ -99,7 +100,7 @@ func TestUpdateTask(t *testing.T) {
 
 func TestDeleteTask(t *testing.T) {
 	r := gin.Default()
-	r.DELETE("/tasks/:id", DeleteTask)
+	r.DELETE("/tasks/:id", tasks.DeleteTask)
 
 	req, _ := http.NewRequest("DELETE", "/tasks/1", nil)
 	resp := httptest.NewRecorder()

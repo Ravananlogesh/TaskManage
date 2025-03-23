@@ -44,7 +44,7 @@ host = "localhost"
 port = 5432
 user = "your_user"
 password = "your_password"
-dbname = "tasks_db"
+dbname = "taskmanage"
 sslmode = "disable"
 ```
 
